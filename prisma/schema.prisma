@@ -1,0 +1,35 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Contact {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  phone     String
+  address   String?
+  notes     String?
+  horses    Horse[]  // Relation to the Horse model
+}
+
+model Horse {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  type     String  // "Horse", "Donkey", or "Pony"
+  shoes    Boolean
+  ownerId  String
+  owner    Contact @relation(fields: [ownerId], references: [id])
+}
+
+model Expense {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  description String
+  amount      Float
+  date        DateTime @default(now())
+  paymentType String   // "Cash", "Check", "Venmo"
+}
+
